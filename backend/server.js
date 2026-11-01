@@ -39,6 +39,10 @@ app.use((err, _req, res, _next) => {
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 DineSpot backend running on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🚀 DineSpot backend running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

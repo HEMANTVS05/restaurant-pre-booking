@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Calendar, Clock, Users, Coffee, CheckCircle, Clock3, XCircle } from 'lucide-react';
 import './Profile.css';
 
-const API = 'http://localhost:5000';
+const API = import.meta.env.VITE_API_URL || '';
 
 const Profile = () => {
   const { user, logout } = useAuth();

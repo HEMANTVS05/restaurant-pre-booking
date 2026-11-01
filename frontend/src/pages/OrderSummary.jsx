@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { Calendar, Clock, Users, Utensils, CheckSquare } from 'lucide-react';
 import './OrderSummary.css';
 
+const API = import.meta.env.VITE_API_URL || '';
+
 const vegMenu = [
   'Chana Masala', 'Baingan Bharta', 'Dal Makhani', 'Malai Kofta', 
   'Bhindi Masala', 'Rajma Masala', 'Sarson Ka Saag', 'Veg Pulao',
@@ -80,7 +82,7 @@ const OrderSummary = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:5000/api/orders', {
+      const response = await fetch(`${API}/api/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userEmail: user.email, orderDetails })

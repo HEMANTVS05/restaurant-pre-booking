@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Check, X, Clock, MapPin, Calendar, Users, Coffee } from 'lucide-react';
 import './Admin.css';
 
-const API = 'http://localhost:5000';
+const API = import.meta.env.VITE_API_URL || '';
 
 const Admin = () => {
   const { user } = useAuth();
