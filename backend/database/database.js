@@ -8,8 +8,7 @@ if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
 
 const db = new Database(path.join(dbDir, 'dinespot.db'));
 
-// Enable WAL mode for better concurrent read performance
-db.pragma('journal_mode = WAL');
+
 // Enforce foreign keys
 db.pragma('foreign_keys = ON');
 
