@@ -1,9 +1,10 @@
 const express = require('express');
 const cors = require('cors');
-const { seedRestaurants } = require('./seed/seedRestaurants');
+const seedRestaurants =
+  require('./seed/seedRestaurants.js');
 
 const restaurantRoutes = require('./routes/restaurants');
-const bookingRoutes   = require('./routes/bookings');
+const bookingRoutes = require('./routes/bookings');
 
 const app = express();
 
@@ -22,8 +23,8 @@ seedRestaurants();
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/api/restaurants', restaurantRoutes);
-app.use('/api/orders',      bookingRoutes);   // backward compat with frontend
-app.use('/api/bookings',    bookingRoutes);   // REST alias
+app.use('/api/orders', bookingRoutes);   // backward compat with frontend
+app.use('/api/bookings', bookingRoutes);   // REST alias
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
 app.use((_req, res) => {

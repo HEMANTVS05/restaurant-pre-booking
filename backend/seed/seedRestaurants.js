@@ -73,4 +73,4 @@ function seedRestaurants() {
   }
 }
 
-module.exports = { seedRestaurants };
+module.exports = seedRestaurants;
