@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foodie Palace – Discover & Pre-Book Restaurants</title>
+  <meta name="description"
+    content="Search restaurants by region in Chennai, check live table availability, and pre-book your favourite meals — all in one place.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <!-- Leaflet.js (free map, no API key) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+
+<body>
+
+  <!-- ═══ SCROLL PROGRESS BAR ═══ -->
+  <div id="scroll-progress">
+    <div id="scroll-bar"></div>
+  </div>
+
+  <!-- ═══════════════ NAVBAR ═══════════════ -->
+  <nav class="navbar" id="main-navbar">
+    <div class="nav-brand">
+      <i class="fas fa-utensils brand-icon"></i>
+      <h2>Foodie Palace</h2>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#explore">Explore</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#reserve">Reserve</a></li>
+    </ul>
+    <button id="nav-login-btn" class="google-button">
+      <i class="fas fa-sign-in-alt"></i> Sign In
+    </button>
+  </nav>
+
+  <!-- ═══════════════ HOME SECTION ═══════════════ -->
+  <section id="home" class="homesec">
+
+    <!-- Layer 1: Canvas Particles -->
+    <canvas id="hero-particles" class="hero-canvas" aria-hidden="true"></canvas>
+
+    <!-- Layer 2: Ambient Gradient Orbs -->
+    <div class="hero-orbs" aria-hidden="true">
+      <div class="hero-orb orb-1"></div>
+      <div class="hero-orb orb-2"></div>
+      <div class="hero-orb orb-3"></div>
+    </div>
+
+    <!-- Layer 3: Floating Food Icons -->
+    <div class="hero-floating-icons" aria-hidden="true">
+      <span class="floating-icon fi-1">🍜</span>
+      <span class="floating-icon fi-2">🍕</span>
+      <span class="floating-icon fi-3">🥘</span>
+      <span class="floating-icon fi-4">🍣</span>
+      <span class="floating-icon fi-5">🍷</span>
+      <span class="floating-icon fi-6">🥗</span>
+      <span class="floating-icon fi-7">🍛</span>
+    </div>
+
+    <!-- Layer 4: Content -->
+    <div class="hero-content">
+      <div class="hero-badge reveal-badge">🍽️ Premium Dining Experience</div>
+
+      <h1 class="hero-title">
+        <span class="word-reveal">Discover the Best</span>
+        <br>
+        <span class="hero-highlight word-reveal">Restaurants Near You</span>
+      </h1>
+
+      <p class="hero-sub reveal-fade">Search by region · Check live availability · Pre-book in seconds</p>
+
+      <div class="hero-cta-group reveal-fade">
+        <a href="#explore" class="hero-btn primary">
+          <i class="fas fa-search"></i> Explore Restaurants
+        </a>
+        <a href="#menu" class="hero-btn secondary">
+          <i class="fas fa-book-open"></i> View Menu
+        </a>
+      </div>
+
+      <div class="hero-stats reveal-fade">
+        <div class="stat">
+          <span class="count-up" data-count="50" data-plus="true">50+</span>
+          <p>Restaurants</p>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat">
+          <span class="count-up" data-count="8" data-plus="true">8+</span>
+          <p>Regions</p>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat">
+          <span class="count-up" data-count="1000" data-plus="true">1000+</span>
+          <p>Happy Guests</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll Hint -->
+    <div class="scroll-hint" aria-hidden="true">
+      <div class="scroll-hint-line"></div>
+      <i class="fas fa-chevron-down"></i>
+    </div>
+
+    <div class="hero-overlay"></div>
+  </section>
+
+  <!-- Wave Divider: Hero → Explore -->
+  <div class="wave-sep" aria-hidden="true">
+    <svg viewBox="0 0 1440 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,35 C320,70 780,0 1100,45 C1230,65 1360,30 1440,35 L1440,70 L0,70 Z" fill="#0e0e1a" />
+    </svg>
+  </div>
+
+  <!-- ═══════════════ EXPLORE BY REGION ═══════════════ -->
+  <section id="explore" class="explore-sec">
+    <div class="section-header">
+      <div class="section-tag">🔍 Live Availability</div>
+      <h2 class="section-title">Find Restaurants by Region</h2>
+      <p class="section-sub">Enter your neighbourhood and discover available tables right now</p>
+    </div>
+
+    <!-- Search Box -->
+    <div class="region-search-wrapper">
+      <div class="region-search-box">
+        <i class="fas fa-map-marker-alt search-pin"></i>
+        <input type="text" id="region-input" class="region-input" placeholder="e.g. Ramapuram, Anna Nagar, T. Nagar…"
+          autocomplete="off" list="region-suggestions">
+        <datalist id="region-suggestions">
+          <option value="Ramapuram">
+          <option value="Anna Nagar">
+          <option value="T. Nagar">
+          <option value="Adyar">
+          <option value="Velachery">
+          <option value="Porur">
+          <option value="Mylapore">
+        </datalist>
+        <button class="region-search-btn" onclick="searchRegion()" id="search-btn">
+          <i class="fas fa-search"></i> Search
+        </button>
+      </div>
+      <!-- Quick region chips -->
+      <div class="region-chips">
+        <span class="chip-label">Quick pick:</span>
+        <button class="region-chip" onclick="quickSearch('Ramapuram')">Ramapuram</button>
+        <button class="region-chip" onclick="quickSearch('Anna Nagar')">Anna Nagar</button>
+        <button class="region-chip" onclick="quickSearch('T. Nagar')">T. Nagar</button>
+        <button class="region-chip" onclick="quickSearch('Adyar')">Adyar</button>
+        <button class="region-chip" onclick="quickSearch('Velachery')">Velachery</button>
+        <button class="region-chip" onclick="quickSearch('Mylapore')">Mylapore</button>
+      </div>
+    </div>
+
+    <!-- Search Results Area -->
+    <div id="search-results" class="search-results" style="display:none;">
+      <div class="results-header" id="results-header"></div>
+      <div id="restaurant-grid" class="restaurant-grid"></div>
+    </div>
+
+    <!-- ── Map Panel ── -->
+    <div class="map-panel" id="map-panel">
+      <div class="map-header">
+        <div class="map-header-left">
+          <div class="map-icon-badge"><i class="fas fa-map-marked-alt"></i></div>
+          <div>
+            <div class="map-title" id="map-title">Restaurant Map</div>
+            <div class="map-subtitle" id="map-subtitle">Showing results on map</div>
+          </div>
+        </div>
+        <div class="map-legend">
+          <div class="legend-item"><span class="legend-dot green"></span> Available</div>
+          <div class="legend-item"><span class="legend-dot yellow"></span> Limited</div>
+          <div class="legend-item"><span class="legend-dot red"></span> Full</div>
+        </div>
+      </div>
+      <div id="region-map"></div>
+    </div>
+
+    <!-- No Results -->
+    <div id="no-results" class="no-results" style="display:none;">
+      <i class="fas fa-map-marked-alt no-results-icon"></i>
+      <h3>No restaurants found</h3>
+      <p>We couldn't find any restaurants in "<span id="no-results-region"></span>". Try another region.</p>
+    </div>
+
+    <!-- Selected Restaurant Banner -->
+    <div id="selected-restaurant-banner" class="selected-banner" style="display:none;">
+      <i class="fas fa-check-circle"></i>
+      <span id="selected-banner-text">Restaurant selected!</span>
+      <a href="#menu" class="banner-link">Pick your menu items <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- ═══════════════ MENU SECTION ═══════════════ -->
+  <section id="menu" class="menusec">
+    <div class="section-header">
+      <div class="section-tag">📋 Our Menu</div>
+      <h2 class="section-title" style="color:aliceblue;">Choose Your Favourites</h2>
+      <p class="section-sub" style="color:rgba(255,255,255,0.7);">Select dishes you'd like pre-ordered at your table</p>
+    </div>
+
+    <!-- TOGGLE BUTTONS -->
+    <div class="menu-toggle-group">
+      <button onclick="showveg()" class="menu-toggle-btn active" id="veg-toggle-btn">
+        <i class="fas fa-leaf"></i> Veg Menu
+      </button>
+      <button onclick="shownonveg()" class="menu-toggle-btn" id="nonveg-toggle-btn">
+        <i class="fas fa-drumstick-bite"></i> Non-Veg Menu
+      </button>
+    </div>
+
+    <!-- VEG MENU -->
+    <div class="menu-card" id="veg-menu">
+      <h2 class="menu-card-title veg-title"><i class="fas fa-seedling"></i> VEG ITEMS</h2>
+      <div class="menu-items-grid">
+        <div class="itemsveg1">
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Chana Masala</label>
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Baingan Bharta</label>
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Dal Makhani</label>
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Malai Kofta</label>
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Bhindi Masala</label>
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Rajma Masala</label>
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Sarson Ka Saag</label>
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Veg Pulao</label>
+        </div>
+        <div class="itemsveg2">
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Gobi Manchurian</label>
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Kadai Paneer</label>
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Methi Matar Malai</label>
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Aloo Baingan</label>
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Mushroom Masala</label>
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Matar Paneer</label>
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Navratan Korma</label>
+          <label><input type="checkbox" class="menu-item" data-type="veg"> Paneer Butter Masala</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- NON VEG MENU -->
+    <div class="menu-card" id="nonveg-menu" style="display:none;">
+      <h2 class="menu-card-title nonveg-title"><i class="fas fa-drumstick-bite"></i> NON-VEG ITEMS</h2>
+      <div class="menu-items-grid">
+        <div class="itemsnonveg1">
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Mutton Korma</label>
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Prawn Masala</label>
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Rogan Josh</label>
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Tandoori Chicken</label>
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Keema Pav</label>
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Chicken Tikka</label>
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Goan Fish Curry</label>
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Lamb Vindaloo</label>
+        </div>
+        <div class="itemsnonveg2">
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Egg Curry</label>
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Chili Chicken</label>
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Mutton Biryani</label>
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Chicken Stew</label>
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Beef Roast</label>
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Fish Fry</label>
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Chicken Cafreal</label>
+          <label><input type="checkbox" class="menu-item" data-type="nonveg"> Crab Masala</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ RESERVATION SECTION ═══════════════ -->
+  <section id="reserve" class="reservesec">
+    <div class="section-header">
+      <div class="section-tag">📅 Book a Table</div>
+      <h2 class="section-title" style="color:aliceblue;">Reserve Your Seats</h2>
+      <p class="section-sub" style="color:rgba(255,255,255,0.7);">Fill in your details to complete the reservation</p>
+    </div>
+
+    <!-- Selected restaurant info in reservation -->
+    <div id="booking-restaurant-info" class="booking-restaurant-info" style="display:none;">
+      <i class="fas fa-store"></i>
+      <div class="bri-text">
+        <span class="bri-label">Booking at</span>
+        <span class="bri-name" id="bri-name">—</span>
+        <span class="bri-meta" id="bri-meta">—</span>
+      </div>
+      <button class="bri-change" onclick="clearRestaurantSelection()">
+        <i class="fas fa-times"></i> Change
+      </button>
+    </div>
+
+    <!-- No restaurant selected warning -->
+    <div id="no-restaurant-warning" class="no-restaurant-warning">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>Please <a href="#explore">search and select a restaurant</a> first before reserving.</span>
+    </div>
+
+    <div class="reservation-box" id="reservation-form">
+      <label>
+        <i class="fas fa-calendar-alt label-icon"></i> Select Date:
+        <input type="date" id="date" required>
+      </label>
+
+      <label>
+        <i class="fas fa-clock label-icon"></i> Select Time:
+        <select id="time" required>
+          <option value="">Select time slot</option>
+          <option value="10:00 AM - 11:00 AM">10:00 AM – 11:00 AM</option>
+          <option value="11:00 AM - 12:00 PM">11:00 AM – 12:00 PM</option>
+          <option value="12:00 PM - 1:00 PM">12:00 PM – 1:00 PM</option>
+          <option value="6:00 PM - 7:00 PM">6:00 PM – 7:00 PM</option>
+          <option value="7:00 PM - 8:00 PM">7:00 PM – 8:00 PM</option>
+          <option value="8:00 PM - 9:00 PM">8:00 PM – 9:00 PM</option>
+        </select>
+      </label>
+
+      <label>
+        <i class="fas fa-users label-icon"></i> Number of Guests:
+        <input type="number" id="people" min="1" max="20" value="2" required>
+      </label>
+
+      <button class="reserve-btn" id="book-now-btn" onclick="bookNow()">
+        <i class="fas fa-calendar-check"></i> Book Now
+      </button>
+
+      <button id="restore-order-btn" class="reserve-btn restore-btn" style="display:none;" onclick="restoreOrder()">
+        <i class="fas fa-redo"></i> Restore Previous Order
+      </button>
+
+      <!-- Utility buttons -->
+      <div class="test-buttons">
+        <button class="test-btn" onclick="checkLogin()">
+          <i class="fas fa-user"></i> Check Login
+        </button>
+        <button class="test-btn" onclick="clearStorage()">
+          <i class="fas fa-trash"></i> Clear Storage
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SCRIPTS ═══════════════ -->
+  <script src="restaurants-data.js"></script>
+  <script src="script.js"></script>
+  <script src="animations.js"></script>
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    (function () {
+      try {
+        emailjs.init("1-apsNAlFgK7FP7Nl");
+        console.log("✅ EmailJS initialized");
+      } catch (error) {
+        console.error("❌ EmailJS init error:", error);
+      }
+    })();
+  </script>
+
+  <!-- Firebase Auth -->
+  <script type="module" src="auth.js"></script>
+
+  <!-- Utility Functions -->
+  <script>
+    // Check Login Status
+    function checkLogin() {
+      const userEmail = localStorage.getItem("userEmail");
+      const username = localStorage.getItem("username");
+      alert(
+        "Login Status:\n\n" +
+        "Email: " + (userEmail || "NOT LOGGED IN") + "\n" +
+        "Name: " + (username || "NOT LOGGED IN") + "\n\n" +
+        "Total items in storage: " + localStorage.length
+      );
+    }
+
+    // Clear Storage
+    function clearStorage() {
+      if (confirm("Clear ALL localStorage data?")) {
+        localStorage.clear();
+        alert("Storage cleared! Page will reload…");
+        setTimeout(() => location.reload(), 500);
+      }
+    }
+
+    // Set today's date as default
+    document.addEventListener('DOMContentLoaded', function () {
+      const today = new Date().toISOString().split('T')[0];
+      const dateInput = document.getElementById('date');
+      if (dateInput) {
+        dateInput.value = today;
+        dateInput.min = today;
+      }
+      const userEmail = localStorage.getItem("userEmail");
+      // Restore restaurant selection UI if exists
+      restoreRestaurantUI();
+    });
+  </script>
+
+</body>
+
+</html>

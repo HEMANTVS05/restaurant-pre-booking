@@ -1,0 +1,96 @@
+====================================================================
+           DINESPOT : RESTAURANT PRE-BOOKING WEBSITE
+               COMPREHENSIVE ARCHITECTURE & INFO
+====================================================================
+
+1. PROJECT OVERVIEW
+--------------------------------------------------------------------
+The platform is a modern, high-performance web application designed to help users discover restaurants in Chennai, view their details, and pre-book tables. It has recently been migrated from a legacy Static HTML/JS/CSS structure to a decoupled modern tech stack utilizing a Client-Server Architecture.
+
+
+2. TECHNOLOGY STACK
+--------------------------------------------------------------------
+FRONTEND:
+- React.js: Core library for building the dynamic user interface.
+- Vite: Next-generation frontend tooling used as the build tool and development server for lightning-fast hot module replacement.
+- React Router DOM: For handling client-side routing and Single Page Application (SPA) navigation without page reloads.
+- Lucide React: A premium, customizable icon library used throughout the UI.
+- Vanilla CSS: Fully customized stylesheets utilizing modern web features like CSS variables, flexbox, grid, and keyframe animations.
+
+BACKEND:
+- Node.js: JavaScript runtime environment executing the backend logic.
+- Express.js: Fast, unopinionated web framework for Node.js used to build the REST API.
+- CORS (Cross-Origin Resource Sharing): Middleware enabled to allow the React frontend (running on port 5173) to communicate with the backend (running on port 5000).
+- Mock JSON Database: In-memory JavaScript array serving as the primary data source (migrated from the legacy static files).
+
+
+3. SYSTEM ARCHITECTURE
+--------------------------------------------------------------------
+The application follows a strictly Decoupled Client-Server Architecture.
+
+- Frontend (Client): The React application runs independently on the user's browser. It handles all UI rendering, state management, form validations, and routing. It communicates asynchronously with the backend via HTTP Fetch requests.
+- Backend (Server): Acts as an API gateway and business logic controller. It listens for requests from the frontend, processes them, interacts with the data layer, and sends back JSON responses. 
+
+Data Flow Example (Booking a Table):
+User clicks "Book" -> React handles state transition to OrderSummary page -> User submits form -> React fires a POST request to Express -> Express processes the payload, logs the order, and sends a { success: true } response -> React updates the UI to show a "Booking Confirmed" success screen.
+
+
+4. DIRECTORY STRUCTURE
+--------------------------------------------------------------------
+Root Directory/
+├── legacy/                  # Contains all old HTML, CSS, and vanilla JS files for reference/backup.
+│
+├── frontend/                # The React application
+│   ├── index.html           # Main HTML entry point created by Vite
+│   ├── package.json         # Frontend dependencies and scripts
+│   └── src/
+│       ├── main.jsx         # React application bootstrap & context providers
+│       ├── App.jsx          # Main routing hub integrating components and pages
+│       ├── index.css        # Global CSS variables, resets, and glassmorphism styling
+│       ├── components/      # Reusable UI building blocks
+│       │   ├── Navbar.jsx & .css
+│       │   ├── Hero.jsx & .css
+│       │   └── RestaurantCard.jsx & .css
+│       ├── pages/           # Route-level components representing full screens
+│       │   ├── Home.jsx & .css
+│       │   ├── Login.jsx & .css
+│       │   └── OrderSummary.jsx & .css
+│       └── context/         # React Context API for global state
+│           └── AuthContext.jsx # Handles user sessions and localStorage persistence
+│
+└── backend/                 # The Express API Server
+    ├── package.json         # Backend dependencies and startup scripts
+    ├── server.js            # Express server configuration and API endpoints
+    └── data.js              # The mock database holding restaurant information
+
+
+5. FEATURES IMPLEMENTED & DONE SO FAR
+--------------------------------------------------------------------
+A. User Interface (Premium Aesthetics):
+- "Glassmorphism": Frosted glass panel effects used on cards and forms.
+- Dynamic Backgrounds: Custom dark theme with radial gradient accents and blurred imagery.
+- Micro-interactions: Hover scaling on restaurant cards, button shadow elevations, and smooth fade-in animations on page load.
+
+B. Core Functionality:
+- Global State Management: Built an AuthContext that persists user login sessions using browser localStorage so users stay logged in across refreshes.
+- Simulated Authentication: A beautiful login/signup screen mimicking Google/Email login to store session data.
+- Dynamic Search: Real-time search bar on the Hero section to filter restaurants by region (e.g., "Anna Nagar", "Adyar").
+- Restaurant Rendering: Dynamic grid mapping over data fetched from the API backend, displaying price ranges, tags, availability, and ratings.
+- Booking Flow: Order summary page capturing Date, Time, and Guest count, transmitting data to the backend POST endpoint, and returning a confirmation screen.
+
+C. API Endpoints (Backend):
+- GET /api/restaurants : Serves the full list of available restaurants.
+- POST /api/orders : Accepts booking payloads { userEmail, orderDetails } and simulates processing the order.
+
+
+6. HOW TO RUN THE PROJECT
+--------------------------------------------------------------------
+Frontend:
+1. Open terminal and navigate to the `frontend/` directory.
+2. Run `npm run dev`
+3. Access at http://localhost:5173
+
+Backend:
+1. Open terminal and navigate to the `backend/` directory.
+2. Run `npm run dev` (or `node server.js`)
+3. API is accessible at http://localhost:5000
