@@ -2,7 +2,8 @@ node_modules
 .vercel
 dist
 .env
-.env.local
+.env.*
+!.env.example
 *.log
 *.db-wal
 *.db-shm
